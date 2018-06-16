@@ -61,3 +61,13 @@ ext.miscVersionInformation = [
 ext.mavenReleaseInformation = [
     groupId: 'com.matthewtamlin'
 ]
+
+task deleteAllOutputDirectories(dependsOn: [
+    ':library-components:deleteOutputDirectories',
+    ':library-test-harnesses:deleteOutputDirectories'])
+
+task buildAllModules(dependsOn: [
+    ':library-components:build',
+    ':library-test-harnesses:build'])
+
+task buildAllReleases(dependsOn: [':library-components:buildRelease'])
