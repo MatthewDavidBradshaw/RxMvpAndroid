@@ -46,6 +46,11 @@ dependencies {
 
   api project.ext.dependencies.guava
 
+  testImplementation project.ext.dependencies.junit
+
+  testImplementation project.ext.dependencies.hamcrest
+
+  testImplementation project.ext.dependencies.mockito
 }
 
 ext.releaseInfo = [
