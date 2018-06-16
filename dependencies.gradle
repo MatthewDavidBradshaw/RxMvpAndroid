@@ -45,4 +45,6 @@ ext.dependencies = [
     ],
 
     androidTestingTools: 'com.matthew-tamlin:android-testing-tools:3.0.1',
+
+    guava: 'com.google.guava:guava:20.0-rc1'
 ]
