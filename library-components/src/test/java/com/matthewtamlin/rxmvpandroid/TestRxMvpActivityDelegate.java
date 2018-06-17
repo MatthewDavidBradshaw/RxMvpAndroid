@@ -27,8 +27,6 @@ public class TestRxMvpActivityDelegate {
 
   private TestView view;
 
-  private TestPresenter presenter;
-
   private RxMvpActivityDelegate<TestView, TestPresentation, TestPresenter> delegate;
 
   @SuppressWarnings("unchecked")
@@ -36,7 +34,8 @@ public class TestRxMvpActivityDelegate {
   public void setup() {
     dataSource = mock(DataSource.class);
     view = new TestView();
-    presenter = new TestPresenter(view, dataSource);
+
+    final TestPresenter presenter = new TestPresenter(view, dataSource);
 
     delegate = new RxMvpActivityDelegate<>(view, presenter);
   }
