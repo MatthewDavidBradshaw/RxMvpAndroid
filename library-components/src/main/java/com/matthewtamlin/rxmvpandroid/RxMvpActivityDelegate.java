@@ -122,10 +122,12 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
     final Completable pendingPresentationBackAction = this.pendingPresentationBackAction;
 
     if (pendingViewBackAction != null) {
+      this.pendingViewBackAction = null; // Used -> no longer needed
       pendingViewBackAction.blockingAwait();
       return true;
 
     } else if (pendingPresentationBackAction != null) {
+      this.pendingPresentationBackAction = null; // Used -> no longer needed
       pendingPresentationBackAction.blockingAwait();
       return true;
 
