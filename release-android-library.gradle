@@ -16,15 +16,15 @@
 
 apply plugin: 'maven'
 
-def localReleaseDirectory = "${buildDir}/release/${project.version}"
+def localReleaseDirectory = "${buildDir}/release/${project.ext.releaseInfo.version}"
 
-task zipRelease(type: Zip) {
+task zipRelease(type: Zip, dependsOn: 'uploadArchives') {
   from localReleaseDirectory
   destinationDir buildDir
-  archiveName "release-${version}.zip"
+  archiveName "release-${project.ext.releaseInfo.version}.zip"
 }
 
-task buildRelease(dependsOn: ['uploadArchives', 'zipRelease']) {
+task buildRelease(dependsOn: 'zipRelease') {
   doLast {
     println 'Release \'' +
         "$project.ext.releaseInfo.group:" +
