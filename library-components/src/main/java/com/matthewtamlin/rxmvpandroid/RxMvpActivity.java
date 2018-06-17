@@ -36,8 +36,10 @@ import android.widget.FrameLayout;
  * @param <P>
  *     the type of presenter
  */
-public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresenter<?>> extends AppCompatActivity {
-  private RxMvpActivityDelegate<V, P> delegate;
+public abstract class RxMvpActivity<V extends RxMvpView, T extends RxMvpPresentation, P extends RxMvpPresenter<T>>
+    extends AppCompatActivity {
+
+  private RxMvpActivityDelegate<V, T, P> delegate;
 
   private FrameLayout rootView;
 

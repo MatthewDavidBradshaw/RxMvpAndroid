@@ -41,12 +41,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     the type of presenter used in the activity
  */
 public class
-RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter<?>> {
+RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extends RxMvpPresenter<T>> {
   private final V view;
 
   private final P presenter;
 
-  private RxMvpPresentation currentPresentation;
+  private T currentPresentation;
 
   private Disposable currentTasks;
 
