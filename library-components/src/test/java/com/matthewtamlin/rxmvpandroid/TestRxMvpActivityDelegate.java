@@ -1,5 +1,6 @@
 package com.matthewtamlin.rxmvpandroid;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.google.common.base.Optional;
@@ -370,11 +371,13 @@ public class TestRxMvpActivityDelegate {
 
     public final PublishSubject<String> label = PublishSubject.create();
 
+    @NonNull
     @Override
     public Observable<Optional<Completable>> observePendingBackActions() {
       return pendingBackActions;
     }
 
+    @NonNull
     @Override
     public View asView() {
       return mock(View.class);
@@ -397,6 +400,7 @@ public class TestRxMvpActivityDelegate {
       this.dataSource = dataSource;
     }
 
+    @NonNull
     @Override
     public Completable getTasks() {
       return view
@@ -404,6 +408,7 @@ public class TestRxMvpActivityDelegate {
           .flatMapCompletable(label -> Completable.fromRunnable(() -> dataSource.saveLabel(label)));
     }
 
+    @NonNull
     @Override
     public Observable<Optional<Completable>> observePendingBackActions() {
       return pendingBackActions;
@@ -420,6 +425,7 @@ public class TestRxMvpActivityDelegate {
       this.dataSource = dataSource;
     }
 
+    @NonNull
     @Override
     public TestPresentation createPresentation() {
       return new TestPresentation(view, dataSource);
