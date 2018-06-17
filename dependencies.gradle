@@ -23,28 +23,9 @@ ext.dependencies = [
 
     rxJava: 'io.reactivex.rxjava2:rxjava:2.1.12',
 
-    dexmaker: [
-        core: 'com.google.dexmaker:dexmaker:1.2',
-        mockitoPlugin: 'com.google.dexmaker:dexmaker-mockito:1.2'
-    ],
-
     androidSupport: [
-        annotations: 'com.android.support:support-annotations:27.1.0',
         appCompat: 'com.android.support:appcompat-v7:27.1.0'
     ],
-
-    androidTestingSupport: [
-        runner: 'com.android.support.test:runner:0.5',
-        rules: 'com.android.support.test:rules:0.5',
-
-        espresso: [
-            core: 'com.android.support.test.espresso:espresso-core:3.0.1',
-            contrib: 'com.android.support.test.espresso:espresso-contrib:3.0.1',
-            intents: 'com.android.support.test.espresso:espresso-intents:3.0.1'
-        ]
-    ],
-
-    androidTestingTools: 'com.matthew-tamlin:android-testing-tools:3.0.1',
 
     guava: 'com.google.guava:guava:20.0-rc1'
 ]
