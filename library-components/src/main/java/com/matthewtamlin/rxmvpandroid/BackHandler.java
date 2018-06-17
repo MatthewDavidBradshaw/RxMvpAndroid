@@ -16,6 +16,8 @@
 
 package com.matthewtamlin.rxmvpandroid;
 
+import android.support.annotation.NonNull;
+
 import com.google.common.base.Optional;
 
 import io.reactivex.Completable;
@@ -32,5 +34,6 @@ public interface BackHandler {
    *
    * @return a new observable that emits pending back actions
    */
+  @NonNull
   public Observable<Optional<Completable>> observePendingBackActions();
 }

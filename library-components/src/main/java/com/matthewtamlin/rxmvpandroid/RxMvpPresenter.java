@@ -16,6 +16,8 @@
 
 package com.matthewtamlin.rxmvpandroid;
 
+import android.support.annotation.NonNull;
+
 /**
  * The presenter in an MVP architecture. Presenters are responsible for preparing and creating instances of
  * {@link RxMvpPresentation}, and do not actually perform the presentation tasks directly.
@@ -27,5 +29,6 @@ public interface RxMvpPresenter<P extends RxMvpPresentation> {
   /**
    * @return a new presentation
    */
+  @NonNull
   public P createPresentation();
 }

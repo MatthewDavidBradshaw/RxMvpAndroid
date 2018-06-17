@@ -16,6 +16,8 @@
 
 package com.matthewtamlin.rxmvpandroid;
 
+import android.support.annotation.NonNull;
+
 import io.reactivex.Completable;
 
 /**
@@ -30,5 +32,6 @@ public interface RxMvpPresentation extends BackHandler {
    *
    * @return a completable that performs the presentation tasks
    */
+  @NonNull
   public Completable getTasks();
 }

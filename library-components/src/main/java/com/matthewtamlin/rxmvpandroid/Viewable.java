@@ -16,6 +16,7 @@
 
 package com.matthewtamlin.rxmvpandroid;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
@@ -25,5 +26,6 @@ public interface Viewable {
   /**
    * @return this as a View
    */
+  @NonNull
   public View asView();
 }

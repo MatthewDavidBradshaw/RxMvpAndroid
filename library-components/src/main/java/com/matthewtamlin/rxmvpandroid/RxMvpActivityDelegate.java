@@ -18,6 +18,7 @@ package com.matthewtamlin.rxmvpandroid;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
@@ -64,7 +65,7 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
    * @param presenter
    *     the presenter used in the activity
    */
-  public RxMvpActivityDelegate(final V view, final P presenter) {
+  public RxMvpActivityDelegate(@NonNull final V view, @NonNull final P presenter) {
     this.view = checkNotNull(view);
     this.presenter = checkNotNull(presenter);
   }
@@ -139,10 +140,12 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
   /**
    * @return the current presentation if any
    */
+  @NonNull
   public Optional<T> getCurrentPresentation() {
     return Optional.fromNullable(currentPresentation);
   }
 
+  @NonNull
   private Completable savePendingViewBackActions() {
     return view
         .observePendingBackActions()
@@ -150,6 +153,7 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
             Completable.fromRunnable(() -> pendingViewBackAction = optionalAction.orNull()));
   }
 
+  @NonNull
   private Completable savePendingPresentationBackActions() {
     return currentPresentation
         .observePendingBackActions()
