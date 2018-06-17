@@ -39,7 +39,19 @@ android {
 
 apply from: rootProject.file('dependencies.gradle')
 
-dependencies {}
+dependencies {
+  api project.ext.dependencies.androidSupport.appCompat
+
+  api project.ext.dependencies.rxJava
+
+  api project.ext.dependencies.guava
+
+  testImplementation project.ext.dependencies.junit
+
+  testImplementation project.ext.dependencies.hamcrest
+
+  testImplementation project.ext.dependencies.mockito
+}
 
 ext.releaseInfo = [
     group: rootProject.ext.mavenReleaseInformation.groupId,
