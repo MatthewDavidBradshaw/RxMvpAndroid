@@ -22,6 +22,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
+import com.google.common.base.Optional;
+
 /**
  * An activity that hosts an {@link RxMvpView} and an {@link RxMvpPresenter}.
  * <p>
@@ -93,6 +95,14 @@ public abstract class RxMvpActivity<V extends RxMvpView, T extends RxMvpPresenta
     if (!handledByDelegate) {
       super.onBackPressed();
     }
+  }
+
+  /**
+   * @return the current presentation if any
+   */
+  @NonNull
+  public Optional<T> getCurrentPresentation() {
+    return delegate.getCurrentPresentation();
   }
 
   /**

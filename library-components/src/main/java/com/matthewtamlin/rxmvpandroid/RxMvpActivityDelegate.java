@@ -19,6 +19,8 @@ package com.matthewtamlin.rxmvpandroid;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.google.common.base.Optional;
+
 import io.reactivex.Completable;
 import io.reactivex.disposables.Disposable;
 
@@ -130,6 +132,13 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
     } else {
       return false;
     }
+  }
+
+  /**
+   * @return the current presentation if any
+   */
+  public Optional<T> getCurrentPresentation() {
+    return Optional.fromNullable(currentPresentation);
   }
 
   private Completable savePendingViewBackActions() {
