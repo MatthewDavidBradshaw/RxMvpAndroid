@@ -22,7 +22,7 @@ import io.reactivex.Completable;
  * Performs presentation tasks and handles back presses. Presentations should be stateless, and operate entirely by
  * responding to events from the view and the data source.
  */
-public interface Presentation extends BackHandler {
+public interface RxMvpPresentation extends BackHandler {
   /**
    * Gets a completable that responds to changes in the UI and the data source, and pushes updates as required. The
    * same instance is always returned, so external care should be taken to ensure the completable is used

@@ -46,7 +46,7 @@ RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter<?>> {
 
   private final P presenter;
 
-  private Presentation currentPresentation;
+  private RxMvpPresentation currentPresentation;
 
   private Disposable currentTasks;
 

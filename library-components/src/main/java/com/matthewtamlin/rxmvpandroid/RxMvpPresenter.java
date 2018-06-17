@@ -18,12 +18,12 @@ package com.matthewtamlin.rxmvpandroid;
 
 /**
  * The presenter in an MVP architecture. Presenters are responsible for preparing and creating instances of
- * {@link Presentation}, and do not actually perform the presentation tasks directly.
+ * {@link RxMvpPresentation}, and do not actually perform the presentation tasks directly.
  *
  * @param <P>
  *     the type of presentation
  */
-public interface RxMvpPresenter<P extends Presentation> {
+public interface RxMvpPresenter<P extends RxMvpPresentation> {
   /**
    * @return a new presentation
    */
