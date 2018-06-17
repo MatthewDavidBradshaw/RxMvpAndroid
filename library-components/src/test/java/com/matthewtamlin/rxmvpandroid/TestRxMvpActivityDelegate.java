@@ -361,11 +361,11 @@ public class TestRxMvpActivityDelegate {
     assertThat(presentationBackActionExecutedCount.get(), is(1));
   }
 
-  static interface DataSource {
+  public interface DataSource {
     public void saveLabel(final String label);
   }
 
-  static class TestView implements RxMvpView {
+  public static class TestView implements RxMvpView {
     public final PublishSubject<Optional<Completable>> pendingBackActions = PublishSubject.create();
 
     public final PublishSubject<String> label = PublishSubject.create();
@@ -385,7 +385,7 @@ public class TestRxMvpActivityDelegate {
     }
   }
 
-  static class TestPresentation implements RxMvpPresentation {
+  public static class TestPresentation implements RxMvpPresentation {
     public final PublishSubject<Optional<Completable>> pendingBackActions = PublishSubject.create();
 
     private final TestView view;
@@ -410,7 +410,7 @@ public class TestRxMvpActivityDelegate {
     }
   }
 
-  static class TestPresenter implements RxMvpPresenter<TestPresentation> {
+  public static class TestPresenter implements RxMvpPresenter<TestPresentation> {
     private final TestView view;
 
     private final DataSource dataSource;
