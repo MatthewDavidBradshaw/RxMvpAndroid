@@ -59,7 +59,7 @@ ext.miscVersionInformation = [
 ]
 
 ext.mavenReleaseInformation = [
-    groupId: 'com.matthewtamlin'
+    groupId: 'com.matthew-tamlin'
 ]
 
 task deleteAllOutputDirectories(dependsOn: [':library-components:deleteOutputDirectories'])
