@@ -32,9 +32,9 @@ import android.widget.FrameLayout;
  * to it. The subscription continues until the presentation task completes, or until the {@link #onPause()} callback is
  * delivered.
  * <p>
- * When the user presses the back button, the activity attempts to use the pending back action of the view or the
- * presenter. If both have pending back actions, the view receives priority. If neither have pending back actions,
- * the standard back press behaviour applies. The pending back actions of the view and the presenter are
+ * When the user presses the back button, the activity attempts to execute the pending back action of the view or the
+ * presenter. If both have pending back actions, then the view receives priority. If neither have pending back actions,
+ * then the standard back press behaviour applies. The pending back actions of the view and the presenter are
  * always ignored while the activity is not in a resumed state.
  * <p>
  * The {@link RxMvpActivityDelegate} is provided as an alternative to this activity. It can be used to achieve the
