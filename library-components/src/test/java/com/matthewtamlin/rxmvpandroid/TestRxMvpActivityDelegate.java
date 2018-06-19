@@ -77,12 +77,12 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testStreamBehaviour_beforeOnResume() {
+  public void testStreamBehaviour_neverResumed() {
     verify(dataSource, never()).saveText(any());
   }
 
   @Test
-  public void testStreamBehaviour_afterOnResumeButBeforeOnPause() {
+  public void testStreamBehaviour_resumed() {
     delegate.onResume();
 
     view.label.onNext("test");
@@ -91,7 +91,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testStreamBehaviour_afterOnPause() {
+  public void testStreamBehaviour_paused() {
     delegate.onResume();
     delegate.onPause();
 
@@ -101,14 +101,14 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_beforeOnResume_noPendingBackActionsEmitted() {
+  public void testOnBackPressed_neverResumed_noPendingBackActionsEmitted() {
     final boolean handledByDelegate = delegate.onBackPressed();
 
     assertThat(handledByDelegate, is(false));
   }
 
   @Test
-  public void testOnBackPressed_beforeOnResume_absentViewBackActionEmitted() {
+  public void testOnBackPressed_neverResumed_absentViewBackActionEmitted() {
     view
         .pendingBackActions
         .onNext(Optional.absent());
@@ -119,7 +119,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_beforeOnResume_viewBackActionEmitted() {
+  public void testOnBackPressed_neverResumed_viewBackActionEmitted() {
     final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
     final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
 
@@ -134,7 +134,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_noPendingBackActionsEmitted() {
+  public void testOnBackPressed_resumed_noPendingBackActionsEmitted() {
     delegate.onResume();
 
     final boolean handledByDelegate = delegate.onBackPressed();
@@ -143,7 +143,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_absentViewBackActionEmitted() {
+  public void testOnBackPressed_resumed_absentViewBackActionEmitted() {
     delegate.onResume();
 
     view
@@ -156,7 +156,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_absentPresenterBackActionEmitted() {
+  public void testOnBackPressed_resumed_absentPresenterBackActionEmitted() {
     delegate.onResume();
 
     presenter
@@ -169,7 +169,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_absentViewAndPresenterBackActionsEmitted() {
+  public void testOnBackPressed_resumed_absentViewAndPresenterBackActionsEmitted() {
     delegate.onResume();
 
     view
@@ -186,7 +186,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_viewBackActionEmitted() {
+  public void testOnBackPressed_resumed_viewBackActionEmitted() {
     delegate.onResume();
 
     final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
@@ -203,7 +203,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_presenterBackActionEmitted() {
+  public void testOnBackPressed_resumed_presenterBackActionEmitted() {
     delegate.onResume();
 
     final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
@@ -220,7 +220,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_viewAndPresenterBackActionsEmitted() {
+  public void testOnBackPressed_resumed_viewAndPresenterBackActionsEmitted() {
     delegate.onResume();
 
     final AtomicBoolean viewBackActionExecuted = new AtomicBoolean(false);
@@ -245,7 +245,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnPause_noPendingBackActionsEmitted() {
+  public void testOnBackPressed_paused_noPendingBackActionsEmitted() {
     delegate.onResume();
     delegate.onPause();
 
@@ -255,7 +255,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnPause_absentViewBackActionEmitted() {
+  public void testOnBackPressed_paused_absentViewBackActionEmitted() {
     delegate.onResume();
     delegate.onPause();
 
@@ -269,7 +269,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnPause_viewBackActionEmitted() {
+  public void testOnBackPressed_paused_viewBackActionEmitted() {
     delegate.onResume();
     delegate.onPause();
 
