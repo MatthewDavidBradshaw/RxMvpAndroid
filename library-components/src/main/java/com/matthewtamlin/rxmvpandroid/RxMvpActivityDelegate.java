@@ -79,7 +79,7 @@ RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
 
     currentTasks = Completable
         .mergeArray(
-            presenter.createTasks(),
+            presenter.createOngoingPresentationTasks(),
             savePendingViewBackActions(),
             savePendingPresentationBackActions())
         .subscribe();

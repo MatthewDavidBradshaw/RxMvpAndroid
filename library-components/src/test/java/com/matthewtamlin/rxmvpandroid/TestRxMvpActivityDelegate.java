@@ -639,7 +639,7 @@ public class TestRxMvpActivityDelegate {
 
     @NonNull
     @Override
-    public Completable createTasks() {
+    public Completable createOngoingPresentationTasks() {
       return view
           .observeLabel()
           .flatMapCompletable(label -> Completable.fromRunnable(() -> dataSource.saveText(label)));

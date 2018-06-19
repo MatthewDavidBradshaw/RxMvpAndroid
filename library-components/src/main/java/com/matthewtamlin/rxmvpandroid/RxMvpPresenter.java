@@ -38,5 +38,5 @@ public interface RxMvpPresenter extends BackHandler {
    * @return a new completable that performs the presentation tasks
    */
   @NonNull
-  public Completable createTasks();
+  public Completable createOngoingPresentationTasks();
 }
