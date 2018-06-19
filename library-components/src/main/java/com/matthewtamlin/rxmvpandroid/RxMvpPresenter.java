@@ -18,17 +18,25 @@ package com.matthewtamlin.rxmvpandroid;
 
 import android.support.annotation.NonNull;
 
+import io.reactivex.Completable;
+
 /**
- * The presenter in an MVP architecture. Presenters are responsible for preparing and creating instances of
- * {@link RxMvpPresentation}, and do not actually perform the presentation tasks directly.
- *
- * @param <P>
- *     the type of presentation
+ * The presenter in an MVP architecture. The presenter is responsible for:
+ * <ul>
+ * <li>Responding to UI layer events.</li>
+ * <li>Responding to data layer events.</li>
+ * <li>Pushing updates to the UI layer.</li>
+ * <li>Pushing updates to the data layer.</li>
+ * </ul>
+ * <p>
+ * The presenter expresses the ongoing presentation tasks as a completable.
  */
-public interface RxMvpPresenter<P extends RxMvpPresentation> {
+public interface RxMvpPresenter extends BackHandler {
   /**
-   * @return a new presentation
+   * Creates a completable that performs the ongoing presentation tasks.
+   *
+   * @return a new completable that performs the presentation tasks
    */
   @NonNull
-  public P createPresentation();
+  public Completable createTasks();
 }

@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.google.common.base.Optional;
-
 import io.reactivex.Completable;
 import io.reactivex.disposables.Disposable;
 
@@ -44,12 +42,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     the type of presenter used in the activity
  */
 public class
-RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extends RxMvpPresenter<T>> {
+RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
   private final V view;
 
   private final P presenter;
-
-  private T currentPresentation;
 
   private Disposable currentTasks;
 
@@ -77,15 +73,13 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
    *     if already in a resumed state
    */
   public void onResume() {
-    if (currentPresentation != null || currentTasks != null) {
+    if (currentTasks != null) {
       throw new IllegalStateException("Attempted to resume from resumed state.");
     }
 
-    currentPresentation = presenter.createPresentation();
-
     currentTasks = Completable
         .mergeArray(
-            currentPresentation.getTasks(),
+            presenter.createTasks(),
             savePendingViewBackActions(),
             savePendingPresentationBackActions())
         .subscribe();
@@ -96,10 +90,6 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
    * {@link Activity#onPause()} calls from the host activity.
    */
   public void onPause() {
-    if (currentPresentation != null) {
-      currentPresentation = null;
-    }
-
     if (currentTasks != null) {
       currentTasks.dispose();
       currentTasks = null;
@@ -113,8 +103,8 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
    * @return true if the back press was handled, false otherwise
    */
   public boolean onBackPressed() {
-    if (currentPresentation == null) {
-      // Back actions are only valid while a presentation is in progress
+    if (currentTasks == null) {
+      // Back actions can only be consumed while a presentation task is in progress
       return false;
     }
 
@@ -137,14 +127,6 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
     }
   }
 
-  /**
-   * @return the current presentation if any
-   */
-  @NonNull
-  public Optional<T> getCurrentPresentation() {
-    return Optional.fromNullable(currentPresentation);
-  }
-
   @NonNull
   private Completable savePendingViewBackActions() {
     return view
@@ -155,9 +137,9 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
 
   @NonNull
   private Completable savePendingPresentationBackActions() {
-    return currentPresentation
+    return presenter
         .observePendingBackActions()
-        .flatMapCompletable(action ->
-            Completable.fromRunnable(() -> pendingPresentationBackAction = action.orNull()));
+        .flatMapCompletable(optionalAction ->
+            Completable.fromRunnable(() -> pendingPresentationBackAction = optionalAction.orNull()));
   }
 }
