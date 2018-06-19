@@ -87,7 +87,7 @@ public class RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter
    * Pauses the presentation by disposing of the existing presentation task (if one exists).
    * <p>
    * Delegate all {@link Activity#onPause()} calls from the host activity to this method.
-   *
+   * <p>
    * This method can be safely called from any state.
    */
   public void onPause() {
@@ -98,9 +98,9 @@ public class RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter
   }
 
   /**
-   * Attempts to handle a back press. If both the view and the presenter have pending back actions, the view receives
-   * priority. If neither have pending back actions, the back press is not handled. Back presses are never handled
-   * while paused.
+   * Attempts to handle a back press by executing the pending back action of the view or the presenter. If both have
+   * pending back actions, then the view receives priority. If neither have pending back actions, then the back press
+   * is not handled. Back presses are never handled while paused.
    * <p>
    * Delegate all {@link Activity#onBackPressed()} calls from the host activity to this method.
    *
