@@ -77,12 +77,12 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testStreamBehaviour_neverResumed() {
+  public void testOngoingPresentationTaskSubscription_neverResumed() {
     verify(dataSource, never()).saveText(any());
   }
 
   @Test
-  public void testStreamBehaviour_resumed() {
+  public void testOngoingPresentationTaskSubscription_resumed() {
     delegate.onResume();
 
     view.label.onNext("test");
@@ -91,7 +91,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testStreamBehaviour_paused() {
+  public void testOngoingPresentationTaskSubscription_paused() {
     delegate.onResume();
     delegate.onPause();
 
@@ -101,7 +101,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testStreamBehaviour_pausedThenResumed() {
+  public void testOngoingPresentationTaskSubscription_pausedThenResumed() {
     delegate.onResume();
     delegate.onPause();
     delegate.onResume();
