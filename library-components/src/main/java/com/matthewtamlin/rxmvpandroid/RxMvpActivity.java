@@ -23,22 +23,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
 /**
- * An activity that hosts an {@link RxMvpView} and an {@link RxMvpPresenter}.
+ * An activity for using the RxMvpAndroid architecture. The activity hosts an {@link RxMvpView} and an
+ * {@link RxMvpPresenter}, and manages presentation task subscription/disposal.
  * <p>
- * The activity handles stream subscription and disposal, but does not establish communication between the view and
- * the presenter.
+ * To use this activity, implement {@link #getView()} and {@link #getPresenter()}. The activity adds the view to
+ * the hierarchy in {@link #onCreate(Bundle)}, so it is important that subclasses do not change the content view.
+ * Whenever {@link #onResume()} is called, the activity gets a new presentation task from the presenter and subscribes
+ * to it. The subscription continues until the presentation task completes, or until the {@link #onPause()} callback is
+ * delivered.
  * <p>
- * The view is given priority When handling back presses. If the view fails to handle a back press, then the presenter
- * is given the opportunity. If both fail, the standard back press behaviour applies.
+ * When the user presses the back button, the activity attempts to use the pending back action of the view or the
+ * presenter. If both have pending back actions, the view receives priority. If neither have pending back actions,
+ * the standard back press behaviour applies. The pending back actions of the view and the presenter are
+ * always ignored while the activity is not in a resumed state.
+ * <p>
+ * The {@link RxMvpActivityDelegate} is provided as an alternative to this activity. It can be used to achieve the
+ * RxMvpAndroid architecture in activities that do not extend from this class.
  *
  * @param <V>
  *     the type of view
  * @param <P>
  *     the type of presenter
  */
-public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresenter>
-    extends AppCompatActivity {
-
+public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresenter> extends AppCompatActivity {
   private RxMvpActivityDelegate<V, P> delegate;
 
   private FrameLayout rootView;
@@ -96,7 +103,7 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
   }
 
   /**
-   * Gets the root view of this activity. The view supplied by {@link #getView()} is a direct child of this view.
+   * Gets the root view of this activity.
    *
    * @return the root view of this activity, or null if {@link #onCreate(Bundle)} has not been called yet
    */
