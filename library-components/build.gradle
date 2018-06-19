@@ -56,7 +56,7 @@ dependencies {
 ext.releaseInfo = [
     group: rootProject.ext.mavenReleaseInformation.groupId,
     artifactId: 'rxmvpandroid',
-    version: '1.0.0',
+    version: '2.0.0',
 
     name: 'Rx MVP Android',
     description: 'A framework for reactive MVP architectures in Android projects.',
