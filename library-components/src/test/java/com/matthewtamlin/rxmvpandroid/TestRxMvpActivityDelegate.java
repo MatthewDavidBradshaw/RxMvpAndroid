@@ -40,19 +40,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class TestRxMvpActivityDelegate {
-  private DataSource dataSource;
+  private TestDataSource dataSource;
 
   private TestView view;
 
-  private RxMvpActivityDelegate<TestView, TestPresentation, TestPresenter> delegate;
+  private TestPresenter presenter;
+
+  private RxMvpActivityDelegate<TestView, TestPresenter> delegate;
 
   @SuppressWarnings("unchecked")
   @Before
   public void setup() {
-    dataSource = mock(DataSource.class);
+    dataSource = mock(TestDataSource.class);
     view = new TestView();
-
-    final TestPresenter presenter = new TestPresenter(view, dataSource);
+    presenter = new TestPresenter(view, dataSource);
 
     delegate = new RxMvpActivityDelegate<>(view, presenter);
   }
@@ -76,38 +77,49 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testStreamBehaviour_beforeOnResume() {
-    verify(dataSource, never()).saveLabel(any());
+  public void testOngoingPresentationTaskSubscription_neverResumed() {
+    verify(dataSource, never()).saveText(any());
   }
 
   @Test
-  public void testStreamBehaviour_afterOnResumeButBeforeOnPause() {
+  public void testOngoingPresentationTaskSubscription_resumed() {
     delegate.onResume();
 
     view.label.onNext("test");
 
-    verify(dataSource, times(1)).saveLabel("test");
+    verify(dataSource, times(1)).saveText("test");
   }
 
   @Test
-  public void testStreamBehaviour_afterOnPause() {
+  public void testOngoingPresentationTaskSubscription_paused() {
     delegate.onResume();
     delegate.onPause();
 
     view.label.onNext("test");
 
-    verify(dataSource, never()).saveLabel(any());
+    verify(dataSource, never()).saveText(any());
   }
 
   @Test
-  public void testOnBackPressed_beforeOnResume_noPendingBackActionsEmitted() {
+  public void testOngoingPresentationTaskSubscription_pausedThenResumed() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    view.label.onNext("test");
+
+    verify(dataSource, times(1)).saveText("test");
+  }
+
+  @Test
+  public void testOnBackPressed_neverResumed_noPendingBackActionsEmitted() {
     final boolean handledByDelegate = delegate.onBackPressed();
 
     assertThat(handledByDelegate, is(false));
   }
 
   @Test
-  public void testOnBackPressed_beforeOnResume_absentViewBackActionEmitted() {
+  public void testOnBackPressed_neverResumed_absentViewBackActionEmitted() {
     view
         .pendingBackActions
         .onNext(Optional.absent());
@@ -118,7 +130,18 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_beforeOnResume_viewBackActionEmitted() {
+  public void testOnBackPressed_neverResumed_absentPresenterBackActionEmitted() {
+    presenter
+        .pendingBackActions
+        .onNext(Optional.absent());
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_neverResumed_viewBackActionEmitted() {
     final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
     final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
 
@@ -133,7 +156,45 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_noPendingBackActionsEmitted() {
+  public void testOnBackPressed_neverResumed_presenterBackActionEmitted() {
+    final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
+    final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.of(backAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+    assertThat(backActionExecuted.get(), is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_neverResumed_viewAndPresenterBackActionsEmitter() {
+    final AtomicBoolean viewBackActionExecuted = new AtomicBoolean(false);
+    final Completable viewBackAction = Completable.fromRunnable(() -> viewBackActionExecuted.set(true));
+
+    final AtomicBoolean presenterBackActionExecuted = new AtomicBoolean(false);
+    final Completable presenterBackAction = Completable.fromRunnable(() -> presenterBackActionExecuted.set(true));
+
+    view
+        .pendingBackActions
+        .onNext(Optional.of(viewBackAction));
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.of(presenterBackAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+    assertThat(viewBackActionExecuted.get(), is(false));
+    assertThat(presenterBackActionExecuted.get(), is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_resumed_noPendingBackActionsEmitted() {
     delegate.onResume();
 
     final boolean handledByDelegate = delegate.onBackPressed();
@@ -142,7 +203,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_absentViewBackActionEmitted() {
+  public void testOnBackPressed_resumed_absentViewBackActionEmitted() {
     delegate.onResume();
 
     view
@@ -155,12 +216,10 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_absentPresentationBackActionEmitted() {
+  public void testOnBackPressed_resumed_absentPresenterBackActionEmitted() {
     delegate.onResume();
 
-    delegate
-        .getCurrentPresentation()
-        .get()
+    presenter
         .pendingBackActions
         .onNext(Optional.absent());
 
@@ -170,16 +229,14 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_absentViewAndPresentationBackActionsEmitted() {
+  public void testOnBackPressed_resumed_absentViewAndPresenterBackActionsEmitted() {
     delegate.onResume();
 
     view
         .pendingBackActions
         .onNext(Optional.absent());
 
-    delegate
-        .getCurrentPresentation()
-        .get()
+    presenter
         .pendingBackActions
         .onNext(Optional.absent());
 
@@ -189,7 +246,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_viewBackActionEmitted() {
+  public void testOnBackPressed_resumed_viewBackActionEmitted() {
     delegate.onResume();
 
     final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
@@ -206,15 +263,13 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_presentationBackActionEmitted() {
+  public void testOnBackPressed_resumed_presenterBackActionEmitted() {
     delegate.onResume();
 
     final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
     final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
 
-    delegate
-        .getCurrentPresentation()
-        .get()
+    presenter
         .pendingBackActions
         .onNext(Optional.of(backAction));
 
@@ -225,7 +280,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnResumeButBeforeOnPause_viewAndPresentationBackActionsEmitted() {
+  public void testOnBackPressed_resumed_viewAndPresenterBackActionsEmitted() {
     delegate.onResume();
 
     final AtomicBoolean viewBackActionExecuted = new AtomicBoolean(false);
@@ -238,9 +293,7 @@ public class TestRxMvpActivityDelegate {
         .pendingBackActions
         .onNext(Optional.of(viewBackAction));
 
-    delegate
-        .getCurrentPresentation()
-        .get()
+    presenter
         .pendingBackActions
         .onNext(Optional.of(presenterBackAction));
 
@@ -252,7 +305,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnPause_noPendingBackActionsEmitted() {
+  public void testOnBackPressed_paused_noPendingBackActionsEmitted() {
     delegate.onResume();
     delegate.onPause();
 
@@ -262,7 +315,7 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnPause_absentViewBackActionEmitted() {
+  public void testOnBackPressed_paused_absentViewBackActionEmitted() {
     delegate.onResume();
     delegate.onPause();
 
@@ -276,7 +329,25 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressed_afterOnPause_viewBackActionEmitted() {
+  public void testOnBackPressed_paused_absentPresenterBackActionEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+
+    view
+        .pendingBackActions
+        .onNext(Optional.absent());
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.absent());
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_paused_viewBackActionEmitted() {
     delegate.onResume();
     delegate.onPause();
 
@@ -291,6 +362,160 @@ public class TestRxMvpActivityDelegate {
 
     assertThat(handledByDelegate, is(false));
     assertThat(backActionExecuted.get(), is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_paused_presenterBackActionEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+
+    final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
+    final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.of(backAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+    assertThat(backActionExecuted.get(), is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_paused_viewAndPresenterBackActionsEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+
+    final AtomicBoolean viewBackActionExecuted = new AtomicBoolean(false);
+    final Completable viewBackAction = Completable.fromRunnable(() -> viewBackActionExecuted.set(true));
+
+    final AtomicBoolean presenterBackActionExecuted = new AtomicBoolean(false);
+    final Completable presenterBackAction = Completable.fromRunnable(() -> presenterBackActionExecuted.set(true));
+
+    view
+        .pendingBackActions
+        .onNext(Optional.of(viewBackAction));
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.of(presenterBackAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+    assertThat(viewBackActionExecuted.get(), is(false));
+    assertThat(presenterBackActionExecuted.get(), is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_pausedThenResumed_noPendingBackActionsEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_pausedThenResumed_absentViewBackActionEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    view
+        .pendingBackActions
+        .onNext(Optional.absent());
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_pausedThenResumed_absentPresenterBackActionEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    view
+        .pendingBackActions
+        .onNext(Optional.absent());
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.absent());
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(false));
+  }
+
+  @Test
+  public void testOnBackPressed_pausedThenResumed_viewBackActionEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
+    final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
+
+    view
+        .pendingBackActions
+        .onNext(Optional.of(backAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(true));
+    assertThat(backActionExecuted.get(), is(true));
+  }
+
+  @Test
+  public void testOnBackPressed_pausedThenResumed_presenterBackActionEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    final AtomicBoolean backActionExecuted = new AtomicBoolean(false);
+    final Completable backAction = Completable.fromRunnable(() -> backActionExecuted.set(true));
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.of(backAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(true));
+    assertThat(backActionExecuted.get(), is(true));
+  }
+
+  @Test
+  public void testOnBackPressed_pausedThenResumed_viewAndPresenterBackActionsEmitted() {
+    delegate.onResume();
+    delegate.onPause();
+    delegate.onResume();
+
+    final AtomicBoolean viewBackActionExecuted = new AtomicBoolean(false);
+    final Completable viewBackAction = Completable.fromRunnable(() -> viewBackActionExecuted.set(true));
+
+    final AtomicBoolean presenterBackActionExecuted = new AtomicBoolean(false);
+    final Completable presenterBackAction = Completable.fromRunnable(() -> presenterBackActionExecuted.set(true));
+
+    view
+        .pendingBackActions
+        .onNext(Optional.of(viewBackAction));
+
+    presenter
+        .pendingBackActions
+        .onNext(Optional.of(presenterBackAction));
+
+    final boolean handledByDelegate = delegate.onBackPressed();
+
+    assertThat(handledByDelegate, is(true));
+    assertThat(viewBackActionExecuted.get(), is(true));
+    assertThat(presenterBackActionExecuted.get(), is(false));
   }
 
   @Test
@@ -328,15 +553,13 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressedTwice_presentationBackActionEmitted() {
+  public void testOnBackPressedTwice_presenterBackActionEmitted() {
     delegate.onResume();
 
     final AtomicInteger backActionExecutedCount = new AtomicInteger(0);
     final Completable backAction = Completable.fromRunnable(backActionExecutedCount::incrementAndGet);
 
-    delegate
-        .getCurrentPresentation()
-        .get()
+    presenter
         .pendingBackActions
         .onNext(Optional.of(backAction));
 
@@ -349,25 +572,23 @@ public class TestRxMvpActivityDelegate {
   }
 
   @Test
-  public void testOnBackPressedTwice_viewAndPresentationBackActionEmitted() {
+  public void testOnBackPressedTwice_viewAndPresenterBackActionEmitted() {
     delegate.onResume();
 
     final AtomicInteger viewBackActionExecutedCount = new AtomicInteger(0);
     final Completable viewBackAction = Completable.fromRunnable(viewBackActionExecutedCount::incrementAndGet);
 
-    final AtomicInteger presentationBackActionExecutedCount = new AtomicInteger(0);
-    final Completable presentationBackAction = Completable.fromRunnable(
-        presentationBackActionExecutedCount::incrementAndGet);
+    final AtomicInteger presenterBackActionExecutedCount = new AtomicInteger(0);
+    final Completable presenterBackAction = Completable.fromRunnable(
+        presenterBackActionExecutedCount::incrementAndGet);
 
     view
         .pendingBackActions
         .onNext(Optional.of(viewBackAction));
 
-    delegate
-        .getCurrentPresentation()
-        .get()
+    presenter
         .pendingBackActions
-        .onNext(Optional.of(presentationBackAction));
+        .onNext(Optional.of(presenterBackAction));
 
     final boolean firstPressHandledByDelegate = delegate.onBackPressed();
     final boolean secondPressHandledByDelegate = delegate.onBackPressed();
@@ -375,11 +596,11 @@ public class TestRxMvpActivityDelegate {
     assertThat(firstPressHandledByDelegate, is(true));
     assertThat(secondPressHandledByDelegate, is(true));
     assertThat(viewBackActionExecutedCount.get(), is(1));
-    assertThat(presentationBackActionExecutedCount.get(), is(1));
+    assertThat(presenterBackActionExecutedCount.get(), is(1));
   }
 
-  public interface DataSource {
-    public void saveLabel(final String label);
+  public interface TestDataSource {
+    public void saveText(final String text);
   }
 
   public static class TestView implements RxMvpView {
@@ -404,47 +625,30 @@ public class TestRxMvpActivityDelegate {
     }
   }
 
-  public static class TestPresentation implements RxMvpPresentation {
+  public static class TestPresenter implements RxMvpPresenter {
     public final PublishSubject<Optional<Completable>> pendingBackActions = PublishSubject.create();
 
     private final TestView view;
 
-    private final DataSource dataSource;
+    private final TestDataSource dataSource;
 
-    public TestPresentation(final TestView view, final DataSource dataSource) {
+    public TestPresenter(final TestView view, final TestDataSource dataSource) {
       this.view = view;
       this.dataSource = dataSource;
     }
 
     @NonNull
     @Override
-    public Completable getTasks() {
+    public Completable createOngoingPresentationTasks() {
       return view
           .observeLabel()
-          .flatMapCompletable(label -> Completable.fromRunnable(() -> dataSource.saveLabel(label)));
+          .flatMapCompletable(label -> Completable.fromRunnable(() -> dataSource.saveText(label)));
     }
 
     @NonNull
     @Override
     public Observable<Optional<Completable>> observePendingBackActions() {
       return pendingBackActions;
-    }
-  }
-
-  public static class TestPresenter implements RxMvpPresenter<TestPresentation> {
-    private final TestView view;
-
-    private final DataSource dataSource;
-
-    public TestPresenter(final TestView view, final DataSource dataSource) {
-      this.view = view;
-      this.dataSource = dataSource;
-    }
-
-    @NonNull
-    @Override
-    public TestPresentation createPresentation() {
-      return new TestPresentation(view, dataSource);
     }
   }
 }

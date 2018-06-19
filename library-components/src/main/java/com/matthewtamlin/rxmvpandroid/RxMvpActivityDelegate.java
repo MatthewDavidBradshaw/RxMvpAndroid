@@ -17,10 +17,7 @@
 package com.matthewtamlin.rxmvpandroid;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-
-import com.google.common.base.Optional;
 
 import io.reactivex.Completable;
 import io.reactivex.disposables.Disposable;
@@ -28,28 +25,23 @@ import io.reactivex.disposables.Disposable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Handles the interface between reactive MVP components and an Android activity. To use this delegate in an activity,
- * create an instance during {@link Activity#onCreate(Bundle)} and delegate onResume(), onPause() and onBackPressed()
- * calls.
+ * Delegate for using the RxMvpAndroid architecture in activities that do not extend from {@link RxMvpActivity}. To use
+ * this delegate in an activity, create an instance and pass all onResume(), onPause() and onBackPressed() callbacks
+ * from the activity to the respective delegate methods.
  * <p>
- * The delegate handles stream subscription and disposal, but does not establish communication between the view and
- * the presenter. This must be achieved externally by injecting the view into the presenter or by some other means.
- * <p>
- * The view is given priority When handling back presses. If the view fails to handle a back press, then the presenter
- * is given the opportunity.
+ * The delegate does not handle interaction between the view and the presenter, it merely handles back presses and
+ * manages subscription/disposal of the presentation task. View-presenter interaction must be established externally by
+ * injection, configuration, or some other means.
  *
  * @param <V>
- *     the type of view displayed in the activity
+ *     the type of view
  * @param <P>
- *     the type of presenter used in the activity
+ *     the type of presenter
  */
-public class
-RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extends RxMvpPresenter<T>> {
+public class RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
   private final V view;
 
   private final P presenter;
-
-  private T currentPresentation;
 
   private Disposable currentTasks;
 
@@ -61,9 +53,9 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
    * Constructs a new RxMvpActivityDelegate.
    *
    * @param view
-   *     the view displayed in the activity
+   *     the view
    * @param presenter
-   *     the presenter used in the activity
+   *     the presenter
    */
   public RxMvpActivityDelegate(@NonNull final V view, @NonNull final P presenter) {
     this.view = checkNotNull(view);
@@ -71,35 +63,34 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
   }
 
   /**
-   * Creates and starts a new presentation. Delegate all {@link Activity#onResume()} calls from the host activity.
+   * Resumes the presentation by getting a new presentation task from the presenter and subscribing to it.
+   * <p>
+   * Delegate all {@link Activity#onResume()} calls from the host activity to this method.
    *
    * @throws IllegalStateException
-   *     if already in a resumed state
+   *     if already resumed
    */
   public void onResume() {
-    if (currentPresentation != null || currentTasks != null) {
+    if (currentTasks != null) {
       throw new IllegalStateException("Attempted to resume from resumed state.");
     }
 
-    currentPresentation = presenter.createPresentation();
-
     currentTasks = Completable
         .mergeArray(
-            currentPresentation.getTasks(),
+            presenter.createOngoingPresentationTasks(),
             savePendingViewBackActions(),
             savePendingPresentationBackActions())
         .subscribe();
   }
 
   /**
-   * Cancels the existing presentation. Safe to call if a presentation is not currently in progress. Delegate all
-   * {@link Activity#onPause()} calls from the host activity.
+   * Pauses the presentation by disposing of the existing presentation task (if one exists).
+   * <p>
+   * Delegate all {@link Activity#onPause()} calls from the host activity to this method.
+   * <p>
+   * This method can be safely called from any state.
    */
   public void onPause() {
-    if (currentPresentation != null) {
-      currentPresentation = null;
-    }
-
     if (currentTasks != null) {
       currentTasks.dispose();
       currentTasks = null;
@@ -107,14 +98,17 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
   }
 
   /**
-   * Attempts to handle a back press. The view receives priority over the current presentation. Delegate all
-   * {@link Activity#onBackPressed()} calls from the host activity.
+   * Attempts to handle a back press by executing the pending back action of the view or the presenter. If both have
+   * pending back actions, then the view receives priority. If neither have pending back actions, then the back press
+   * is not handled. Back presses are never handled while paused.
+   * <p>
+   * Delegate all {@link Activity#onBackPressed()} calls from the host activity to this method.
    *
    * @return true if the back press was handled, false otherwise
    */
   public boolean onBackPressed() {
-    if (currentPresentation == null) {
-      // Back actions are only valid while a presentation is in progress
+    if (currentTasks == null) {
+      // Back actions can only be consumed while a presentation task is in progress
       return false;
     }
 
@@ -137,14 +131,6 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
     }
   }
 
-  /**
-   * @return the current presentation if any
-   */
-  @NonNull
-  public Optional<T> getCurrentPresentation() {
-    return Optional.fromNullable(currentPresentation);
-  }
-
   @NonNull
   private Completable savePendingViewBackActions() {
     return view
@@ -155,9 +141,9 @@ RxMvpActivityDelegate<V extends RxMvpView, T extends RxMvpPresentation, P extend
 
   @NonNull
   private Completable savePendingPresentationBackActions() {
-    return currentPresentation
+    return presenter
         .observePendingBackActions()
-        .flatMapCompletable(action ->
-            Completable.fromRunnable(() -> pendingPresentationBackAction = action.orNull()));
+        .flatMapCompletable(optionalAction ->
+            Completable.fromRunnable(() -> pendingPresentationBackAction = optionalAction.orNull()));
   }
 }
