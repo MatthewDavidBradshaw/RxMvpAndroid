@@ -17,7 +17,6 @@
 package com.matthewtamlin.rxmvpandroid;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import io.reactivex.Completable;
@@ -26,23 +25,20 @@ import io.reactivex.disposables.Disposable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Handles the interface between reactive MVP components and an Android activity. To use this delegate in an activity,
- * create an instance during {@link Activity#onCreate(Bundle)} and delegate onResume(), onPause() and onBackPressed()
- * calls.
+ * Delegate for using the RxMvpAndroid architecture in activities that don't extend from {@link RxMvpActivity}. To use
+ * this delegate in an activity, create an instance and pass all onResume(), onPause() and onBackPressed() calls
+ * from the activity to the respective delegate methods.
  * <p>
- * The delegate handles stream subscription and disposal, but does not establish communication between the view and
- * the presenter. This must be achieved externally by injecting the view into the presenter or by some other means.
- * <p>
- * The view is given priority When handling back presses. If the view fails to handle a back press, then the presenter
- * is given the opportunity.
+ * The delegate does not handle interaction between the view and the presenter, it merely handles back presses and
+ * manages subscription/disposal of the presentation task. View-presenter interaction must be established externally by
+ * injection, configuration, or some other means.
  *
  * @param <V>
- *     the type of view displayed in the activity
+ *     the type of view
  * @param <P>
- *     the type of presenter used in the activity
+ *     the type of presenter
  */
-public class
-RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
+public class RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
   private final V view;
 
   private final P presenter;
@@ -57,9 +53,9 @@ RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
    * Constructs a new RxMvpActivityDelegate.
    *
    * @param view
-   *     the view displayed in the activity
+   *     the view
    * @param presenter
-   *     the presenter used in the activity
+   *     the presenter
    */
   public RxMvpActivityDelegate(@NonNull final V view, @NonNull final P presenter) {
     this.view = checkNotNull(view);
@@ -67,10 +63,12 @@ RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
   }
 
   /**
-   * Creates and starts a new presentation. Delegate all {@link Activity#onResume()} calls from the host activity.
+   * Resumes the presentation by getting a new presentation task from the presenter and subscribing to it.
+   * <p>
+   * Delegate all {@link Activity#onResume()} calls from the host activity to this method.
    *
    * @throws IllegalStateException
-   *     if already in a resumed state
+   *     if already resumed
    */
   public void onResume() {
     if (currentTasks != null) {
@@ -86,8 +84,9 @@ RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
   }
 
   /**
-   * Cancels the existing presentation. Safe to call if a presentation is not currently in progress. Delegate all
-   * {@link Activity#onPause()} calls from the host activity.
+   * Pauses the presentation by disposing of the existing presentation task.
+   * <p>
+   * Delegate all {@link Activity#onPause()} calls from the host activity to this method.
    */
   public void onPause() {
     if (currentTasks != null) {
@@ -97,8 +96,11 @@ RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter> {
   }
 
   /**
-   * Attempts to handle a back press. The view receives priority over the current presentation. Delegate all
-   * {@link Activity#onBackPressed()} calls from the host activity.
+   * Attempts to handle a back press. If both the view and the presenter have pending back actions, the view receives
+   * priority. If neither has a pending back action, the back press is not handled. Back presses are never handled
+   * while paused.
+   * <p>
+   * Delegate all {@link Activity#onBackPressed()} calls from the host activity to this method.
    *
    * @return true if the back press was handled, false otherwise
    */
