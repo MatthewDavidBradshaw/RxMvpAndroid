@@ -25,8 +25,8 @@ import io.reactivex.disposables.Disposable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Delegate for using the RxMvpAndroid architecture in activities that don't extend from {@link RxMvpActivity}. To use
- * this delegate in an activity, create an instance and pass all onResume(), onPause() and onBackPressed() calls
+ * Delegate for using the RxMvpAndroid architecture in activities that do not extend from {@link RxMvpActivity}. To use
+ * this delegate in an activity, create an instance and pass all onResume(), onPause() and onBackPressed() callbacks
  * from the activity to the respective delegate methods.
  * <p>
  * The delegate does not handle interaction between the view and the presenter, it merely handles back presses and
@@ -84,9 +84,11 @@ public class RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter
   }
 
   /**
-   * Pauses the presentation by disposing of the existing presentation task.
+   * Pauses the presentation by disposing of the existing presentation task (if one exists).
    * <p>
    * Delegate all {@link Activity#onPause()} calls from the host activity to this method.
+   *
+   * This method can be safely called from any state.
    */
   public void onPause() {
     if (currentTasks != null) {
@@ -97,7 +99,7 @@ public class RxMvpActivityDelegate<V extends RxMvpView, P extends RxMvpPresenter
 
   /**
    * Attempts to handle a back press. If both the view and the presenter have pending back actions, the view receives
-   * priority. If neither has a pending back action, the back press is not handled. Back presses are never handled
+   * priority. If neither have pending back actions, the back press is not handled. Back presses are never handled
    * while paused.
    * <p>
    * Delegate all {@link Activity#onBackPressed()} calls from the host activity to this method.
