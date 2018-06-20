@@ -27,5 +27,10 @@ ext.dependencies = [
         appCompat: 'com.android.support:appcompat-v7:27.1.0'
     ],
 
-    guava: 'com.google.guava:guava:20.0-rc1'
+    guava: 'com.google.guava:guava:20.0-rc1',
+
+    autoValue: [
+        annotations: 'com.google.auto.value:auto-value:1.4.1',
+        compiler: 'com.google.auto.value:auto-value:1.4.1'
+    ]
 ]
