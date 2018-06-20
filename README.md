@@ -74,3 +74,12 @@ If the view and the presenter have both published pending back actions when the 
 
 ### RxMvpActivityDelegate
 If extending from RxMvpActivity is infeasible or otherwise undesirable, you can use the `RxMvpActivityDelegate` to achieve the same results. If you peek under the hood, you'll see that RxMvpActivity is actually just wrapping RxMvpActivityDelegate.
+
+## Contact
+This repository is owned and maintained by Matt Tamlin. Feel free to get in contact at any time via [email](mailto:matthew.tamlin@icloud.com) or [twitter](https://www.twitter.com/TamlinMatthew).
+
+## Contributing
+If you wish to contribute, please read the [contributing guidelines](CONTRIBUTING.md).
+
+## Licensing
+The GUI app and the APIs are licensed under the Apache v2.0 licence. Have a look at [the license](LICENSE) for details.
