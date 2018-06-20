@@ -33,10 +33,8 @@ import io.reactivex.Completable;
  */
 public interface RxMvpPresenter extends BackHandler {
   /**
-   * Creates a completable that performs the ongoing presentation tasks.
-   *
    * @return a new completable that performs the presentation tasks
    */
   @NonNull
-  public Completable createOngoingPresentationTasks();
+  public Completable createPresentationTasks();
 }
