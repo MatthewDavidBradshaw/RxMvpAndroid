@@ -65,13 +65,15 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
   }
 
   @Override
   protected void onResume() {
     super.onResume();
+
+    if (delegate == null) {
+      delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
+    }
 
     delegate.onResume();
   }
@@ -80,11 +82,19 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
   protected void onPause() {
     super.onPause();
 
+    if (delegate == null) {
+      delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
+    }
+
     delegate.onPause();
   }
 
   @Override
   public void onBackPressed() {
+    if (delegate == null) {
+      delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
+    }
+
     final boolean handledByDelegate = delegate.onBackPressed();
 
     if (!handledByDelegate) {
