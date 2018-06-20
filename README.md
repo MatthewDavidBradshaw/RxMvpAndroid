@@ -6,3 +6,17 @@ This framework is very lightweight because it was designed to guide developers r
 - Interfacing a reactive presentation with the Android lifecycle.
 
 The framework handles these events in a way that is compatible and consistent with best practices for reactive programming.
+
+## Releases
+To use this framework, add the following to your gradle build file:
+```groovy
+repositories {
+  jcenter()
+}
+
+dependencies {
+  implementation 'com.matthew-tamlin:rxmvpandroid:1.0.0'
+}
+```
+
+Older versions are available in [the Maven repo](https://bintray.com/matthewtamlin/maven).
