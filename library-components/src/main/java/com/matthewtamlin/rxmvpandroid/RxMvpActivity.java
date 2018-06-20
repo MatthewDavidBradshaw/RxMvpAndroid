@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.FrameLayout;
 
 /**
  * An activity for using the RxMvpAndroid architecture. The activity hosts an {@link RxMvpView} and an
@@ -48,8 +47,6 @@ import android.widget.FrameLayout;
 public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresenter> extends AppCompatActivity {
   private RxMvpActivityDelegate<V, P> delegate;
 
-  private FrameLayout rootView;
-
   /**
    * Called from {@link #onCreate(Bundle)} to get the view for this activity. Each call must return the same instance.
    *
@@ -70,11 +67,6 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    setContentView(R.layout.rx_mvp_activity);
-
-    rootView = findViewById(R.id.root);
-    rootView.addView(getView().asView());
 
     delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
   }
@@ -100,15 +92,5 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
     if (!handledByDelegate) {
       super.onBackPressed();
     }
-  }
-
-  /**
-   * Gets the root view of this activity.
-   *
-   * @return the root view of this activity, or null if {@link #onCreate(Bundle)} has not been called yet
-   */
-  @NonNull
-  public FrameLayout getRootView() {
-    return rootView;
   }
 }
