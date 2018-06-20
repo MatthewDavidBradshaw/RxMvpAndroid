@@ -62,8 +62,12 @@ ext.mavenReleaseInformation = [
     groupId: 'com.matthew-tamlin'
 ]
 
-task deleteAllOutputDirectories(dependsOn: [':library-components:deleteOutputDirectories'])
+task deleteAllOutputDirectories(dependsOn: [
+    ':library-components:deleteOutputDirectories',
+    ':example:deleteOutputDirectories'])
 
-task buildAllModules(dependsOn: [':library-components:build'])
+task buildAllModules(dependsOn: [
+    ':library-components:build',
+    ':example:build'])
 
 task buildAllReleases(dependsOn: [':library-components:buildRelease'])
