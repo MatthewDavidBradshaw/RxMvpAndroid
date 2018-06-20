@@ -51,6 +51,9 @@ dependencies {
   implementation project.ext.dependencies.rxJava
 
   implementation project.ext.dependencies.androidSupport.design
+
+  compileOnly project.ext.dependencies.autoValue.annotations
+  annotationProcessor project.ext.dependencies.autoValue.compiler
 }
 
 task deleteOutputDirectories {
