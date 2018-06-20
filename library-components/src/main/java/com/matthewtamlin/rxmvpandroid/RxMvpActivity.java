@@ -25,11 +25,9 @@ import android.support.v7.app.AppCompatActivity;
  * An activity for using the RxMvpAndroid architecture. The activity hosts an {@link RxMvpView} and an
  * {@link RxMvpPresenter}, and manages presentation task subscription/disposal.
  * <p>
- * To use this activity, implement {@link #getView()} and {@link #getPresenter()}. The activity adds the view to
- * the hierarchy in {@link #onCreate(Bundle)}, so it is important that subclasses do not change the content view.
- * Whenever {@link #onResume()} is called, the activity gets a new presentation task from the presenter and subscribes
- * to it. The subscription continues until the presentation task completes, or until the {@link #onPause()} callback is
- * delivered.
+ * To use this activity, implement {@link #getView()} and {@link #getPresenter()}. Whenever {@link #onResume()} is
+ * called, the activity gets a new presentation task from the presenter and subscribes to it. The subscription
+ * continues until the presentation task completes, or until the {@link #onPause()} callback is delivered.
  * <p>
  * When the user presses the back button, the activity attempts to execute the pending back action of the view or the
  * presenter. If both have pending back actions, then the view receives priority. If neither have pending back actions,
