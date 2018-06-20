@@ -47,6 +47,8 @@ apply from: rootProject.file('dependencies.gradle')
 
 dependencies {
   implementation project(':library-components')
+
+  implementation project.ext.dependencies.rxJava
 }
 
 task deleteOutputDirectories {
