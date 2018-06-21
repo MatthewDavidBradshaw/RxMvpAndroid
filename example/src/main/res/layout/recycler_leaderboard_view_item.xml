@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+  <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical|top"
+      android:clickable="true"
+      android:focusable="true"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="18sp"/>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="8dp"/>
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="14sp"/>
+  </LinearLayout>
+
+  <ImageButton
+      android:id="@+id/delete"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+
+      android:layout_gravity="center_vertical|end"
+      android:background="@android:color/transparent"
+      android:contentDescription="@string/recycler_leaderboard_view_item_delete_button_content_description"
+      android:src="@drawable/icon_bin_grey"/>
+</FrameLayout>
