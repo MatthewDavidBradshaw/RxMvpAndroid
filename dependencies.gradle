@@ -24,8 +24,14 @@ ext.dependencies = [
     rxJava: 'io.reactivex.rxjava2:rxjava:2.1.12',
 
     androidSupport: [
-        appCompat: 'com.android.support:appcompat-v7:27.1.0'
+        appCompat: 'com.android.support:appcompat-v7:27.1.0',
+        design: 'com.android.support:design:27.1.0',
     ],
 
-    guava: 'com.google.guava:guava:20.0-rc1'
+    guava: 'com.google.guava:guava:20.0-rc1',
+
+    autoValue: [
+        annotations: 'com.google.auto.value:auto-value:1.4.1',
+        compiler: 'com.google.auto.value:auto-value:1.4.1'
+    ]
 ]

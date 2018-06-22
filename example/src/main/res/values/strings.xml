@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Leaderboard</string>
+
+  <string name="recycler_leaderboard_view_item_delete_button_content_description">Delete</string>
+</resources>

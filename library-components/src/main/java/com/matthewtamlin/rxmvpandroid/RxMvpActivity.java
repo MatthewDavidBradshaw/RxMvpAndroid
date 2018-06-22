@@ -20,17 +20,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.FrameLayout;
 
 /**
  * An activity for using the RxMvpAndroid architecture. The activity hosts an {@link RxMvpView} and an
  * {@link RxMvpPresenter}, and manages presentation task subscription/disposal.
  * <p>
- * To use this activity, implement {@link #getView()} and {@link #getPresenter()}. The activity adds the view to
- * the hierarchy in {@link #onCreate(Bundle)}, so it is important that subclasses do not change the content view.
- * Whenever {@link #onResume()} is called, the activity gets a new presentation task from the presenter and subscribes
- * to it. The subscription continues until the presentation task completes, or until the {@link #onPause()} callback is
- * delivered.
+ * To use this activity, implement {@link #getView()} and {@link #getPresenter()}. Whenever {@link #onResume()} is
+ * called, the activity gets a new presentation task from the presenter and subscribes to it. The subscription
+ * continues until the presentation task completes, or until the {@link #onPause()} callback is delivered.
  * <p>
  * When the user presses the back button, the activity attempts to execute the pending back action of the view or the
  * presenter. If both have pending back actions, then the view receives priority. If neither have pending back actions,
@@ -47,8 +44,6 @@ import android.widget.FrameLayout;
  */
 public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresenter> extends AppCompatActivity {
   private RxMvpActivityDelegate<V, P> delegate;
-
-  private FrameLayout rootView;
 
   /**
    * Called from {@link #onCreate(Bundle)} to get the view for this activity. Each call must return the same instance.
@@ -70,18 +65,15 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    setContentView(R.layout.rx_mvp_activity);
-
-    rootView = findViewById(R.id.root);
-    rootView.addView(getView().asView());
-
-    delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
   }
 
   @Override
   protected void onResume() {
     super.onResume();
+
+    if (delegate == null) {
+      delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
+    }
 
     delegate.onResume();
   }
@@ -90,25 +82,23 @@ public abstract class RxMvpActivity<V extends RxMvpView, P extends RxMvpPresente
   protected void onPause() {
     super.onPause();
 
+    if (delegate == null) {
+      delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
+    }
+
     delegate.onPause();
   }
 
   @Override
   public void onBackPressed() {
+    if (delegate == null) {
+      delegate = new RxMvpActivityDelegate<>(getView(), getPresenter());
+    }
+
     final boolean handledByDelegate = delegate.onBackPressed();
 
     if (!handledByDelegate) {
       super.onBackPressed();
     }
-  }
-
-  /**
-   * Gets the root view of this activity.
-   *
-   * @return the root view of this activity, or null if {@link #onCreate(Bundle)} has not been called yet
-   */
-  @NonNull
-  public FrameLayout getRootView() {
-    return rootView;
   }
 }
