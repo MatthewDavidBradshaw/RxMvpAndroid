@@ -131,4 +131,4 @@ We reserve the right to reject any pull request that does not meet our standards
 We don't want to waste anyone's time, so please check with us before you even start writing code. We might have already considered your idea and chosen not to pursue it for a good reason, or we might already be implementing it ourselves.
 
 ## Coding standards
-We require all contributors to adhere to a strict set of coding standards. Consistent code increases the readability of the entire repository and makes development easier for all contributors. Some of these standards can be enforced by automated tools, but others must be enforced manually. The coding standards are documented [here](/developm).
+We require all contributors to adhere to a strict set of coding standards. Consistent code increases the readability of the entire repository and makes development easier for all contributors. Some of these standards can be enforced by automated tools, but others must be enforced manually. The coding standards are documented [here](CodingStandards.md).
