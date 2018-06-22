@@ -25,12 +25,12 @@ Older versions are available in [the Maven repo](https://bintray.com/matthewtaml
 Using the framework is simple if you know what all the components are for and how the framework wires them together. The framework is pretty small so there isn't much to learn.
 
 The framework contains six components:
-- [Viewable](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/Viewable.java).
-- [BackHandler](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/BackHandler.java).
-- [RxMvpView](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpView.java).
-- [RxMvpPresenter](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpPresenter.java).
-- [RxMvpActivity](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpActivity.java).
-- [RxMvpActivityDelegate](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpActivityDelegate.java).
+- [Viewable](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/Viewable.java)
+- [BackHandler](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/BackHandler.java)
+- [RxMvpView](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpView.java)
+- [RxMvpPresenter](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpPresenter.java)
+- [RxMvpActivity](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpActivity.java)
+- [RxMvpActivityDelegate](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/library-components/src/main/java/com/matthewtamlin/rxmvpandroid/RxMvpActivityDelegate.java)
 
 ### Viewable
 Something that can be added to the view hierarchy.
