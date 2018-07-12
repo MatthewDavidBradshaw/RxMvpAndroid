@@ -31,19 +31,19 @@ $body
 ```
 
 `$type` must be one of the following:
-- feat: Added a new feature.
-- fix: Fixed an existing issue or bug.
-- docs: Changed the documentation.
-- style: Changed the code in a way that does not affect the meaning of the code (e.g. formatting for readability).
-- refactor: Changed the code in a way that is neither a bugfix nor a new feature, but still affected the meaning of the code.
-- test: Added, changed or removed tests.
-- build: Modified the build system.
-- misc: Made changes not covered by the other types. Misc changes are not included in the changelogs.
+- `feat`: Added a new feature.
+- `fix`: Fixed an existing issue or bug.
+- `docs`: Changed the documentation.
+- `style`: Changed the code in a way that does not affect the meaning of the code (e.g. formatting for readability).
+- `refactor`: Changed the code in a way that is neither a bugfix nor a new feature, but still affected the meaning of the code.
+- `test`: Added, changed or removed tests.
+- `build`: Modified the build system.
+- `misc`: Made changes not covered by the other types. Misc changes are not included in the changelogs.
 
 Some common ambiguous tasks:
-- Changes to the README and other checked in repository documents are 'docs' changes.
-- Adding/removing/updating the external dependencies are 'build' changes.
-- Adding/updating copyright headers are 'misc' changes.
+- Changes to the README and other checked in repository documents are docs changes.
+- Adding/removing/updating the external dependencies are build changes.
+- Adding/updating copyright headers are misc changes.
 
 `$scope` denotes the feature, layer or place where the change was made. The scope is subject to the following rules:
 - Use only lower case letters and hyphens.
@@ -76,9 +76,9 @@ The body is subject to the following rules:
 - Values must not contain new lines.
 
 `$key` must be one of the following:
-- desc: A description of the commit.
-- issue: A comma-separated list of issue identifiers resolved by this commit.
-- break: Description of any breaking changes introduced by this commit.
+- `desc`: A description of the commit.
+- `issue`: A comma-separated list of issue identifiers resolved by this commit.
+- `break`: Description of any breaking changes introduced by this commit.
 
 Full examples:
 ```
@@ -110,7 +110,7 @@ Each branch must adhere to the gitflow standards outlined [here](https://danielk
 - Release branches are named as `release/$variant-v$versionNumber` where `$variant-` is optional. Release branches originate from the head of `develop` and are merged into both `master` and `develop` when finished.
 - Hotfix branches are named as `hotfix/$title`. Hotfix branches originate from the head of `master` and are merged into both `master` and `develop` when finished. Merging into `develop` is optional if the fix is no longer relevant.
 
-In addition to the gitflow standard branches, we also use repository documentation branches for changes that affect only the checked in repository documentation (e.g. the README). These branches are named as `repodocs/$title`. They originate from the head of `master` and are merged into both `master` and `develop` when finished. Merging into `develop` is optional if the change is no longer relevant. A repodoc branch is essentially a hotfix branch that only touches repository documentation.
+In addition to the standard gitflow branches, we also use repodocs branches for changes that affect only the checked-in repository documentation (e.g. the README). These branches are named as `repodocs/$title`. They originate from the head of `master` and are merged into both `master` and `develop` when finished. Merging into `develop` is optional if the change is no longer relevant. A repodoc branch is essentially a hotfix branch that only touches repository documentation.
 
 `$title` and `$variant` are subject to the following rules:
 - Only use lower case letters and hyphens.
@@ -123,7 +123,7 @@ In addition to the gitflow standard branches, we also use repository documentati
 - Never start or end with a hyphen or a full stop.
 
 ### Tags
-Tags are used for releases only. Whenever a release branch is merged into master, tag the merge commit with `$variant-v$version`, where `$variant` and `$version` match the name of the release branch. If the branch has no `$variant` then also omit the hyphen in the tag name.
+Tags are used for releases only. Whenever a release branch is merged into master, tag the merge commit with `$variant-v$version`, where `$variant` and `$version` match the name of the release branch. If the branch has no `-$variant` then omit it from the tag too.
 
 ## Pull requests
 We reserve the right to reject any pull request that does not meet our standards. In particular, we will not accept pull requests that do not meet all the standards outlined in this document.
