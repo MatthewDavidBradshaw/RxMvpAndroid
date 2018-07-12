@@ -83,6 +83,3 @@ This repository is owned and maintained by Matt Tamlin. Feel free to get in cont
 
 ## Contributing
 If you wish to contribute, please read the [contributing guidelines](CONTRIBUTING.md).
-
-## Licensing
-The GUI app and the APIs are licensed under the Apache v2.0 licence. Have a look at [the license](LICENSE) for details.
