@@ -7,6 +7,8 @@ This framework is very lightweight because it was designed to guide developers r
 
 The framework handles these events in a way that is compatible and consistent with best practices for reactive programming.
 
+**SUPPORT NOTICE: This library is now STABLE. It is no longer under active development, however pull requests from others are still being accepted.**
+
 ## Releases
 To use this framework, add the following to your gradle build file:
 ```groovy
@@ -77,9 +79,6 @@ If extending from RxMvpActivity is infeasible or otherwise undesirable, you can 
 
 ## Example
 An example of the library in use can be found [here](https://github.com/MatthewTamlin/RxMvpAndroid/blob/master/example/).
-
-## Contact
-This repository is owned and maintained by Matt Tamlin. Feel free to get in contact at any time via [email](mailto:matthew.tamlin@icloud.com) or [twitter](https://www.twitter.com/TamlinMatthew).
 
 ## Contributing
 If you wish to contribute, please read the [contributing guidelines](CONTRIBUTING.md).
